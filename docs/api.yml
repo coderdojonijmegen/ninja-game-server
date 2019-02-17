@@ -1,0 +1,118 @@
+/img-list:
+  description: Request a list of all image names on the server.
+  methods: [GET]
+  response:
+    content: application/json
+    schema:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Title of the image
+            example: Ninja
+          path:
+            type: string
+            description: Image path (as relative url)
+            example: img/ninja.png
+
+socket_in:
+  set_name:
+    type: string
+    description: New name for the current player.
+    example: Rik
+
+  move_left:
+    type: void
+    description: move current player left (width / 10 rounded up, minimum of 1)
+
+  move_right:
+    type: void
+    description: move current player right (width / 10 rounded up, minimum of 1)
+
+  move_up:
+    type: void
+    description: move current player up (height / 10 rounded up, minimum of 1)
+
+  move_down:
+    type: void
+    description: move current player down (height / 10 rounded up, minimum of 1)
+
+  set_styles:
+    type: object
+    description: the css styles for the player avatar as a flat json object.
+    example: {width: "32", height: "64", border: "1px solid black"}
+
+socket_out:
+  get_name:
+    type: string
+    description: Name of the current player
+    example: Rik
+
+  tag:
+    type: boolean
+    description: If this is true, current player is the tagger.
+    example: true
+
+  tagger_monitor:
+    type: object
+    properties:
+      x:
+        type: int
+        description: Left bound
+        example: 0
+      y:
+        type: int
+        description: Up bound
+        example: 0
+      width:
+        type: int
+        description: Width in pixels
+        example: 800
+      height:
+        type: int
+        description: Height in pixels
+        example: 600
+
+  get_players:
+    type: array
+    description: A full list of all players and their statistics and styles.
+    items:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Player id
+          example: 2
+        name:
+          type: string
+          description: Player name
+          example: Rik
+        tagger:
+          type: boolean
+          description: true if the player is the tagger
+          example: false
+        styles:
+          type: object
+          description: 
+          example: {z-index: "1", border: "1px solid black", background-img: "/img/ninja.png"}
+        position:
+          type: object
+          properties:
+            x:
+              type: int
+              description: Left bound
+              example: 128
+            y:
+              type: int
+              description: Up bound
+              example: 96
+            width:
+              type: int
+              description: Width in pixels
+              example: 64
+            height:
+              type: int
+              description: Height in pixels
+              example: 32

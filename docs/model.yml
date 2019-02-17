@@ -1,0 +1,37 @@
+field:
+  width: 5000
+  height: 5000
+
+tagger:
+  player_id: 2
+
+players:
+  - id: 1
+    name: Rik
+    pos:
+      rx: 64
+      lx: 128
+      ty: 64
+      by: 128
+    styles:
+      background-img: rik.png
+      border: 1px solid black
+
+  - id: 2
+    name: Daan
+    pos:
+      lx: 192
+      rx: 224
+      ty: 64
+      by: 96
+    styles:
+      background-img: daan.png
+      border: 1px solid black
+
+images:
+  - name: ninja.png
+    data: blob
+  - name: rik.png
+    data: blob
+  - name: daan.png
+    data: blob
