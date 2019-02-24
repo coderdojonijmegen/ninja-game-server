@@ -4,7 +4,7 @@ export class Avatar {
 
   constructor(
     public name: string,
-    public filename: string
+    public path: string
   ) {}
 
   /**
