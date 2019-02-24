@@ -1,5 +1,5 @@
-/img-list:
-  description: Request a list of all image names on the server.
+/avatars:
+  description: Request a list of all avatars on the server.
   methods: [GET]
   response:
     content: application/json
@@ -10,7 +10,7 @@
         properties:
           name:
             type: string
-            description: Title of the image
+            description: Title of the avatar
             example: Ninja
           path:
             type: string

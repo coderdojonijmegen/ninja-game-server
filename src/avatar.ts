@@ -6,4 +6,14 @@ export class Avatar {
     public name: string,
     public filename: string
   ) {}
+
+  /**
+   * Lists the default avatars.
+   */
+  static get_defaults(): Avatar[] {
+    return [
+      new Avatar('Ninja', '/img/ninja.png'),
+      new Avatar('CoderDojo logo', '/img/coderdojo.png'),
+    ]
+  }
 }
