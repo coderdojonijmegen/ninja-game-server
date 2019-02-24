@@ -12,6 +12,7 @@ export class ServerCallbacks {
   avatar_list: null|(() => Avatar[]) = null
   new_connection: null|(() => number) = null
   close_connection: null|((id: number) => void) = null
+  get_name: null|((id: number) => string) = null
 }
 
 /**
@@ -23,11 +24,12 @@ export class WebServer {
   socket_io: SocketIO.Server|null = null
   server: Http.Server|null = null
   callbacks: ServerCallbacks
-  next_connection_id: number = 1
+  sockets: Map<number, SocketIO.Socket>
 
   constructor() {
     this.koa = new Koa()
     this.callbacks = new ServerCallbacks()
+    this.sockets = new Map()
   }
 
   /**
@@ -61,9 +63,14 @@ export class WebServer {
     this.socket_io.on('connection', (socket) => {
       if (this.callbacks.new_connection) {
         const connection_id = this.callbacks.new_connection()
+        this.sockets.set(connection_id, socket)
+        if (this.callbacks.get_name) {
+          socket.emit('get_name', this.callbacks.get_name(connection_id))
+        }
         socket.on('disconnect', () => {
           if (this.callbacks.close_connection)
             this.callbacks.close_connection(connection_id)
+            this.sockets.delete(connection_id)
         })
       }
     })

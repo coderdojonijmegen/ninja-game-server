@@ -28,10 +28,9 @@ class App {
     const max_connection_id =
       this.connections.reduce((a,c) => Math.max(a, c.id), 0)
     const new_id = max_connection_id + 1
+    const connection = new Connection(new_id, this.add_player())
     
-    this.connections.push(
-      new Connection(new_id, this.add_player())
-    )
+    this.connections.push(connection)
     return new_id
   }
 
@@ -96,6 +95,14 @@ class App {
    */
   run() {
     this.web_server.callbacks.avatar_list = () => this.avatars
+    this.web_server.callbacks.new_connection = () => this.new_connection()
+    this.web_server.callbacks.close_connection = (id: number) => this.close_connection(id)
+    this.web_server.callbacks.get_name = (id: number) => {
+      const player_id = this.get_player_id(id)
+      const player = this.players.find(player => player.id === player_id)
+
+      return (player) ? player.name : 'monitor'
+    }
     this.web_server.start()
   }
 }
