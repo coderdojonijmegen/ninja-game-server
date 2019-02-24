@@ -28,7 +28,7 @@ players:
       background-img: daan.png
       border: 1px solid black
 
-images:
+avatars:
   - name: ninja.png
     data: blob
   - name: rik.png

@@ -4,6 +4,10 @@
   "description": "A game of tag, for use at CoderDojo",
   "main": "build/app.js",
   "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/app.js"
+  },
   "dependencies": {
     "koa": "^2.7.0",
     "koa-static": "^5.0.0",
