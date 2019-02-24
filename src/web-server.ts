@@ -1,6 +1,8 @@
+import Http = require('http')
 import Koa = require('koa')
 import KoaStatic = require('koa-static')
 import KoaRouter = require('koa-router')
+import SocketIO = require('socket.io')
 import { Avatar } from './avatar';
 
 /**
@@ -8,6 +10,8 @@ import { Avatar } from './avatar';
  */
 export class ServerCallbacks {
   avatar_list: null|(() => Avatar[]) = null
+  new_connection: null|(() => number) = null
+  close_connection: null|((id: number) => void) = null
 }
 
 /**
@@ -16,7 +20,10 @@ export class ServerCallbacks {
 export class WebServer {
   port: number = 3000
   koa: Koa
+  socket_io: SocketIO.Server|null = null
+  server: Http.Server|null = null
   callbacks: ServerCallbacks
+  next_connection_id: number = 1
 
   constructor() {
     this.koa = new Koa()
@@ -46,12 +53,31 @@ export class WebServer {
   }
 
   /**
+   * The socket.io API routes.
+   * @param {Http.Server} server 
+   */
+  socket_api(server: Http.Server) {
+    this.socket_io = SocketIO(this.server)
+    this.socket_io.on('connection', (socket) => {
+      if (this.callbacks.new_connection) {
+        const connection_id = this.callbacks.new_connection()
+        socket.on('disconnect', () => {
+          if (this.callbacks.close_connection)
+            this.callbacks.close_connection(connection_id)
+        })
+      }
+    })
+  }
+
+  /**
    * Initializes and starts the web server.
    */
   start() {
     this.koa.use(this.api_routes())
     this.koa.use(this.public_folder())
-    this.koa.listen(this.port)
+    this.server = Http.createServer(this.koa.callback())
+    this.socket_api(this.server)
+    this.server.listen(this.port)
 
     console.log(`Listening on http://localhost:${this.port}`)
   }

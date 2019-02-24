@@ -3,12 +3,14 @@ import { Player } from './player';
 import { Avatar } from './avatar';
 import { Tagger } from './tagger';
 import { WebServer } from './web-server';
+import { Connection } from './connection';
 
 
 class App {
   field: Field
   tagger: Tagger|null = null
   players: Player[] = []
+  connections: Connection[] = []
   avatars: Avatar[]
   web_server: WebServer
 
@@ -17,6 +19,43 @@ class App {
     this.field = new Field(5000, 5000)
     this.web_server = new WebServer()
     this.avatars = Avatar.get_defaults()
+  }
+
+  /**
+   * Set up a new connection. A connected client is automatically a player.
+   */
+  new_connection(): number {
+    const max_connection_id =
+      this.connections.reduce((a,c) => Math.max(a, c.id), 0)
+    const new_id = max_connection_id + 1
+    
+    this.connections.push(
+      new Connection(new_id, this.add_player())
+    )
+    return new_id
+  }
+
+  /**
+   * Get the player id for current connection.
+   * @param {number} connection_id
+   */
+  get_player_id(connection_id: number): number|null {
+    const connection = this.connections.find(
+      conn => (conn.id === connection_id)
+    )
+    return (connection) ? connection.player_id : null
+  }
+
+  /**
+   * Close the connection.
+   * @param {number} id - The connection id.
+   */
+  close_connection(id: number) {
+    const player_id = this.get_player_id(id)
+    if (player_id) {
+      this.remove_player(player_id)
+    }
+    this.connections = this.connections.filter(conn => (conn.id !== id))
   }
 
   /**

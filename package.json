@@ -19,6 +19,7 @@
     "@types/koa-router": "^7.0.39",
     "@types/koa-static": "^4.0.1",
     "@types/node": "^11.9.4",
+    "@types/socket.io": "^2.1.2",
     "typescript": "^3.3.3"
   }
 }
