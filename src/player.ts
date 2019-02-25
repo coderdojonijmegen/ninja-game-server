@@ -23,6 +23,7 @@ export class Player {
 export class PlayerList {
   index: Map<number, Player>
   tagger: number = 0
+  previous_tagger: number = 0
 
   constructor() {
     this.index = new Map()
@@ -39,8 +40,11 @@ export class PlayerList {
    * Add a new player
    */
   add_player(): number {
+    // TODO: check that each player has a unique name.
     const new_id = this.max_player_id() + 1
     this.index.set(new_id, new Player(new_id, "anon" + new_id, 2500, 2500))
+    this.previous_tagger = this.tagger
+    this.tagger = new_id
     return new_id
   }
 

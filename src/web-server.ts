@@ -11,6 +11,7 @@ import { Avatar } from './avatar';
 export class ServerCallbacks {
   avatar_list: null|(() => Avatar[]) = null
   new_connection: null|(() => number) = null
+  initialize_connection: null|((id: number) => void) = null
   close_connection: null|((id: number) => void) = null
   get_name: null|((id: number) => string) = null
 }
@@ -64,6 +65,9 @@ export class WebServer {
       if (this.callbacks.new_connection) {
         const connection_id = this.callbacks.new_connection()
         this.sockets.set(connection_id, socket)
+        if (this.callbacks.initialize_connection) {
+          this.callbacks.initialize_connection(connection_id)
+        }
         if (this.callbacks.get_name) {
           socket.emit('get_name', this.callbacks.get_name(connection_id))
         }
@@ -74,6 +78,25 @@ export class WebServer {
         })
       }
     })
+  }
+
+  /**
+   * Tell the tagger that he's the tagger, tell the previous tagger that he isn't anymore.
+   * 
+   * @param {number} connection_id_tagger 
+   * @param {number} connection_id_previous_tagger 
+   */
+  emit_tagger(connection_id_tagger: number|null, connection_id_previous_tagger: number|null): boolean[] {
+    const send_message = (is_tagger: boolean, socket: SocketIO.Socket|undefined) =>
+      socket ? socket.emit('tag', is_tagger) : false
+
+    const find_and_send = (is_tagger: boolean, id: number|null) =>
+      (id) ? send_message(is_tagger, this.sockets.get(id)) : false
+
+    return [
+      find_and_send(true, connection_id_tagger),
+      find_and_send(false, connection_id_previous_tagger)
+    ]
   }
 
   /**

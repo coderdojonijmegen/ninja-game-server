@@ -17,12 +17,12 @@ export class ConnectionList {
   /**
    * Set up a new connection. A connected client is automatically a player.
    */
-  new_connection(player_id: number): number {
+  new_connection(): number {
     const max_connection_id =
       Array.from(this.index.keys()).reduce((a,b) => Math.max(a, b), 0)
 
     const new_id = max_connection_id + 1
-    this.index.set(new_id, new Connection(new_id, player_id))
+    this.index.set(new_id, new Connection(new_id, null))
     return new_id
   }
 
@@ -49,5 +49,30 @@ export class ConnectionList {
     const connection = this.index.get(connection_id)
 
     return (connection) ? connection.player_id : null
+  }
+
+  /**
+   * Sets a player id for the connection.
+   * @param {number} connection_id 
+   * @param {number} player_id 
+   */
+  set_player_id(connection_id: number, player_id: number) {
+    const connection = this.index.get(connection_id)
+    if (connection) {
+      connection.player_id = player_id
+    }
+  }
+
+  /**
+   * Find a connection, by looking up the player ids.
+   * @param {number} player_id 
+   */
+  get_connection_by_player_id(player_id: number): number|null {
+    for (const connection of this.index.values()) {
+      if (connection.player_id === player_id) {
+        return connection.id
+      }
+    }
+    return null
   }
 }
