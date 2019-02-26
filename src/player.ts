@@ -191,6 +191,39 @@ export class PlayerList {
   }
 
   /**
+   * 
+   * @param {Player} player 
+   * @param {boolean} perform_tagger_change 
+   */
+  check_tag(player: Player, perform_tagger_change: boolean): boolean {
+    if (player.id === this.tagger) {
+      // Player is the tagger, check collisions with other players.
+      for (const other_player of this.index.values()) {
+        if (other_player.id !== player.id && player.hasCollision(other_player)) {
+          if (perform_tagger_change) {
+            this.previous_tagger = player.id
+            this.tagger = other_player.id
+          }
+          return true
+        }
+      }
+    }
+    else {
+      // Player is not the tagger, check if he collides with the tagger.
+      const tagger = this.index.get(this.tagger)
+      if (tagger && player.hasCollision(tagger)) {
+        if (perform_tagger_change) {
+          this.previous_tagger = tagger.id
+          this.tagger = player.id
+        }
+        return true
+      }
+    }
+    return false
+  }
+
+
+  /**
    * Move a player.
    * @param {number} player_id
    * @param {number} direction 
@@ -199,25 +232,12 @@ export class PlayerList {
    */
   move(player_id: number, direction: Direction, bounds: Pos): boolean {
     const player = this.index.get(player_id)
-    if (player && player.move(direction, bounds)) {
-      if (player.id === this.tagger) {
-        // Player is the tagger, check collisions with other players.
-        for (const other_player of this.index.values()) {
-          if (other_player.id !== player.id && player.hasCollision(other_player)) {
-            this.previous_tagger = player.id
-            this.tagger = other_player.id
-            return true
-          }
-        }
-      }
-      else {
-        // Player is not the tagger, check if he collides with the tagger.
-        const tagger = this.index.get(this.tagger)
-        if (tagger && player.hasCollision(tagger)) {
-          this.previous_tagger = tagger.id
-          this.tagger = player.id
-          return true
-        }
+    if (player) {
+      const already_collided = this.check_tag(player, false)
+      if (player.move(direction, bounds)) {
+        return already_collided
+          ? false
+          : this.check_tag(player, true)
       }
     }
     return false
