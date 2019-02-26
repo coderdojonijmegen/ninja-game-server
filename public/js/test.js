@@ -50,11 +50,20 @@ TestApp.prototype.showPlayerOverview = function showPlayerOverview(players) {
 }
 
 
+TestApp.prototype.sendName = function sendName() {
+    var input = $('#newName')
+    var name = input.val()
+    this.socket.emit('set_name', name)
+    input.val('')
+}
+
+
 TestApp.prototype.start = function start() {
     var _this = this
     this.socket.on('get_name', function(data) { _this.setName(data) })
     this.socket.on('tag', function(data) { _this.showTaggerText(data) })
     this.socket.on('get_players', function(data) { _this.showPlayerOverview(data) })
+    $('#sendNewName').click(function(input) { _this.sendName() })
 }
 
 

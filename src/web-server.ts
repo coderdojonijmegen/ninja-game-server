@@ -14,6 +14,7 @@ export class ServerCallbacks {
   new_connection: null|(() => number) = null
   initialize_connection: null|((id: number) => void) = null
   close_connection: null|((id: number) => void) = null
+  set_name: null|((id: number, name: string) => void) = null
 }
 
 /**
@@ -68,6 +69,11 @@ export class WebServer {
         if (this.callbacks.initialize_connection) {
           this.callbacks.initialize_connection(connection_id)
         }
+        socket.on('set_name', (name: string) => {
+          if (this.callbacks.set_name) {
+            this.callbacks.set_name(connection_id, name)
+          }
+        })
         socket.on('disconnect', () => {
           if (this.callbacks.close_connection)
             this.callbacks.close_connection(connection_id)

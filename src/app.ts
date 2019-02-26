@@ -57,7 +57,21 @@ class App {
     this.web_server.callbacks.close_connection = (id: number) => {
       const player_id = this.connections.close_connection(id)
       if (player_id !== null) {
-        this.players.remove_player(player_id)
+        const tagger_changed = this.players.remove_player(player_id)
+        if (tagger_changed) {
+          const tagger_connection_id = this.connections.get_connection_by_player_id(this.players.tagger)
+          this.web_server.emit_tagger(tagger_connection_id, null)
+        }
+        this.web_server.emit_players(this.players.normalize())
+      }
+    }
+    // Set a player name.
+    this.web_server.callbacks.set_name = (connection_id: number, name: string) => {
+      const player_id = this.connections.get_player_id(connection_id)
+      if (player_id) {
+        this.players.set_player_name(player_id, name)
+        this.web_server.emit_name(connection_id, this.players.get_player_name(player_id))
+        this.web_server.emit_players(this.players.normalize())
       }
     }
     // Start the web server.

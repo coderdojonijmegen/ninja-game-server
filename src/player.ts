@@ -88,12 +88,17 @@ export class PlayerList {
    * Removes a certain player from the game.
    * 
    * If this player is the tagger, tagger is redirected to the player with the largest id.
+   * 
+   * @returns {boolean} - Returns true if the tagger has changed.
    */
-  remove_player(id: number) {
+  remove_player(id: number): boolean {
     this.index.delete(id)
     if (this.tagger === id) {
+      this.previous_tagger = 0
       this.tagger = this.max_player_id()
+      return true
     }
+    return false
   }
 
   /**
@@ -103,6 +108,18 @@ export class PlayerList {
   get_player_name(id: number): string {
     const player = this.index.get(id)
     return (player) ? player.name : 'unknown player'
+  }
+
+  /**
+   * Set a player name.
+   * @param {number }id 
+   * @param {string} name 
+   */
+  set_player_name(id: number, name: string): void {
+    const player = this.index.get(id)
+    if (player) {
+      player.name = name
+    }
   }
 
   /**
