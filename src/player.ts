@@ -1,6 +1,28 @@
 import { Pos } from "./pos";
 import { Avatar } from "./avatar";
 import { Styles } from "./styles";
+import { clearScreenDown } from "readline";
+
+
+
+/**
+ * A function used when moving a player avatar.
+ * @param {number} length 
+ * @param {boolean} positive
+ */
+function calculateMoveDelta(length: number, positive: boolean): number {
+  const delta = Math.ceil(length / 10)
+  const absolute = (delta > 1) ? delta : 1
+  return positive ? absolute : -absolute
+}
+
+
+export enum Direction {
+  Left,
+  Right,
+  Up,
+  Down
+}
 
 
 export interface NormalizedPlayer {
@@ -36,6 +58,52 @@ export class Player {
   }
 
   /**
+   * Checks if this player collides with another.
+   * @param {Player} other 
+   * @returns {boolean} true if a collision takes place.
+   */
+  hasCollision(other: Player): boolean {
+    return this.pos.hasCollision(other.pos)
+  }
+
+  /**
+   * Move left.
+   * @param {number} bounds 
+   * @returns true if moved succesfully
+   */
+  move(direction: Direction, bounds: Pos): boolean {
+    const d = { x: 0, y: 0 }
+    switch (direction) {
+      case Direction.Left:
+        d.x = calculateMoveDelta(this.pos.getWidth(), false)
+        break;
+      case Direction.Right:
+        d.x = calculateMoveDelta(this.pos.getWidth(), true)
+        break;
+      case Direction.Up:
+        d.y = calculateMoveDelta(this.pos.getHeight(), false)
+        break;
+      case Direction.Down:
+        d.y = calculateMoveDelta(this.pos.getHeight(), true)
+    }
+
+    const newPos = new Pos(
+      this.pos.lx + d.x,
+      this.pos.rx + d.x,
+      this.pos.ty + d.y,
+      this.pos.by + d.y
+    )
+
+    if (newPos.isWithinBounds(bounds)) {
+      this.pos = newPos
+      return true
+    }
+    else {
+      return false
+    }
+  }
+
+  /**
    * Create a normalized player object, to send to the clients.
    * @param {number} tagger_id 
    * @returns {object}
@@ -49,8 +117,8 @@ export class Player {
       position: {
         x: this.pos.lx,
         y: this.pos.ty,
-        width: this.pos.rx - this.pos.lx,
-        height: this.pos.by - this.pos.ty
+        width: this.pos.getWidth(),
+        height: this.pos.getHeight()
       }
     }
   }
@@ -120,6 +188,39 @@ export class PlayerList {
     if (player) {
       player.name = name
     }
+  }
+
+  /**
+   * Move a player.
+   * @param {number} player_id
+   * @param {number} direction 
+   * @param {Pos} bounds 
+   * @returns {boolean} true if the tagger has changed.
+   */
+  move(player_id: number, direction: Direction, bounds: Pos): boolean {
+    const player = this.index.get(player_id)
+    if (player && player.move(direction, bounds)) {
+      if (player.id === this.tagger) {
+        // Player is the tagger, check collisions with other players.
+        for (const other_player of this.index.values()) {
+          if (player.hasCollision(other_player)) {
+            this.previous_tagger = player.id
+            this.tagger = other_player.id
+            return true
+          }
+        }
+      }
+      else {
+        // Player is not the tagger, check if he collides with the tagger.
+        const tagger = this.index.get(this.tagger)
+        if (tagger && player.hasCollision(tagger)) {
+          this.previous_tagger = tagger.id
+          this.tagger = player.id
+          return true
+        }
+      }
+    }
+    return false
   }
 
   /**

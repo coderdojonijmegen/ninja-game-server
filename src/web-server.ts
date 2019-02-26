@@ -10,11 +10,15 @@ import { NormalizedPlayer } from './player';
  * The various callbacks for the app to use.
  */
 export class ServerCallbacks {
-  avatar_list: null|(() => Avatar[]) = null
-  new_connection: null|(() => number) = null
-  initialize_connection: null|((id: number) => void) = null
-  close_connection: null|((id: number) => void) = null
-  set_name: null|((id: number, name: string) => void) = null
+  avatar_list: null | (() => Avatar[]) = null
+  new_connection: null | (() => number) = null
+  initialize_connection: null | ((id: number) => void) = null
+  close_connection: null | ((id: number) => void) = null
+  set_name: null | ((id: number, name: string) => void) = null
+  move_left: null | ((id: number) => void) = null
+  move_right: null | ((id: number) => void) = null
+  move_up: null | ((id: number) => void) = null
+  move_down: null | ((id: number) => void) = null
 }
 
 /**
@@ -23,8 +27,8 @@ export class ServerCallbacks {
 export class WebServer {
   port: number = 3000
   koa: Koa
-  socket_io: SocketIO.Server|null = null
-  server: Http.Server|null = null
+  socket_io: SocketIO.Server | null = null
+  server: Http.Server | null = null
   callbacks: ServerCallbacks
   sockets: Map<number, SocketIO.Socket>
 
@@ -74,10 +78,30 @@ export class WebServer {
             this.callbacks.set_name(connection_id, name)
           }
         })
+        socket.on('move_left', () => {
+          if (this.callbacks.move_left) {
+            this.callbacks.move_left(connection_id)
+          }
+        })
+        socket.on('move_right', () => {
+          if (this.callbacks.move_right) {
+            this.callbacks.move_right(connection_id)
+          }
+        })
+        socket.on('move_up', () => {
+          if (this.callbacks.move_up) {
+            this.callbacks.move_up(connection_id)
+          }
+        })
+        socket.on('move_down', () => {
+          if (this.callbacks.move_down) {
+            this.callbacks.move_down(connection_id)
+          }
+        })
         socket.on('disconnect', () => {
           if (this.callbacks.close_connection)
             this.callbacks.close_connection(connection_id)
-            this.sockets.delete(connection_id)
+          this.sockets.delete(connection_id)
         })
       }
     })
@@ -89,11 +113,11 @@ export class WebServer {
    * @param {number} connection_id_tagger 
    * @param {number} connection_id_previous_tagger 
    */
-  emit_tagger(connection_id_tagger: number|null, connection_id_previous_tagger: number|null): boolean[] {
-    const send_message = (is_tagger: boolean, socket: SocketIO.Socket|undefined) =>
+  emit_tagger(connection_id_tagger: number | null, connection_id_previous_tagger: number | null): boolean[] {
+    const send_message = (is_tagger: boolean, socket: SocketIO.Socket | undefined) =>
       socket ? socket.emit('tag', is_tagger) : false
 
-    const find_and_send = (is_tagger: boolean, id: number|null) =>
+    const find_and_send = (is_tagger: boolean, id: number | null) =>
       (id) ? send_message(is_tagger, this.sockets.get(id)) : false
 
     return [

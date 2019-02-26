@@ -57,13 +57,20 @@ TestApp.prototype.sendName = function sendName() {
     input.val('')
 }
 
-
 TestApp.prototype.start = function start() {
     var _this = this
+
+    // Socket input
     this.socket.on('get_name', function(data) { _this.setName(data) })
     this.socket.on('tag', function(data) { _this.showTaggerText(data) })
     this.socket.on('get_players', function(data) { _this.showPlayerOverview(data) })
-    $('#sendNewName').click(function(input) { _this.sendName() })
+
+    // User input
+    $('#sendNewName').click(function() { _this.sendName() })
+    $('#moveLeft').click(function() { _this.socket.emit('move_left') })
+    $('#moveRight').click(function() { _this.socket.emit('move_right') })
+    $('#moveUp').click(function() { _this.socket.emit('move_up') })
+    $('#moveDown').click(function() { _this.socket.emit('move_down') })
 }
 
 
