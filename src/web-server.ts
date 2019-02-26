@@ -14,7 +14,6 @@ export class ServerCallbacks {
   new_connection: null|(() => number) = null
   initialize_connection: null|((id: number) => void) = null
   close_connection: null|((id: number) => void) = null
-  get_name: null|((id: number) => string) = null
 }
 
 /**
@@ -69,9 +68,6 @@ export class WebServer {
         if (this.callbacks.initialize_connection) {
           this.callbacks.initialize_connection(connection_id)
         }
-        if (this.callbacks.get_name) {
-          socket.emit('get_name', this.callbacks.get_name(connection_id))
-        }
         socket.on('disconnect', () => {
           if (this.callbacks.close_connection)
             this.callbacks.close_connection(connection_id)
@@ -107,6 +103,13 @@ export class WebServer {
   emit_players(players: NormalizedPlayer[]) {
     if (this.socket_io) {
       this.socket_io.emit('get_players', players)
+    }
+  }
+
+  emit_name(connection_id: number, name: string) {
+    const socket = this.sockets.get(connection_id)
+    if (socket) {
+      socket.emit('get_name', name)
     }
   }
 
