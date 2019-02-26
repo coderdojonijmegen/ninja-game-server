@@ -106,6 +106,12 @@ export class WebServer {
     }
   }
 
+  /**
+   * Emit the name of a connection to its socket.
+   * 
+   * @param {number} connection_id 
+   * @param {string} name 
+   */
   emit_name(connection_id: number, name: string) {
     const socket = this.sockets.get(connection_id)
     if (socket) {
