@@ -4,6 +4,7 @@ import KoaStatic = require('koa-static')
 import KoaRouter = require('koa-router')
 import SocketIO = require('socket.io')
 import { Avatar } from './avatar';
+import { NormalizedPlayer } from './player';
 
 /**
  * The various callbacks for the app to use.
@@ -97,6 +98,16 @@ export class WebServer {
       find_and_send(true, connection_id_tagger),
       find_and_send(false, connection_id_previous_tagger)
     ]
+  }
+
+  /**
+   * Send player info to all sockets.
+   * @param {array} players 
+   */
+  emit_players(players: NormalizedPlayer[]) {
+    if (this.socket_io) {
+      this.socket_io.emit('get_players', players)
+    }
   }
 
   /**

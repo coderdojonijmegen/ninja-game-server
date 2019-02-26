@@ -36,6 +36,7 @@ class App {
         this.connections.get_connection_by_player_id(this.players.tagger),
         this.connections.get_connection_by_player_id(this.players.previous_tagger)
       )
+      this.web_server.emit_players(this.players.normalize())
     }
     // Closes the connection and removes the player, if the connection is attached to a player.
     this.web_server.callbacks.close_connection = (id: number) => {

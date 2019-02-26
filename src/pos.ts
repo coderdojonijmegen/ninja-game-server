@@ -1,7 +1,7 @@
 export class Pos {
   constructor(
-    public rx: number,
     public lx: number,
+    public rx: number,
     public ty: number,
     public by: number
   ) {}

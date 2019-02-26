@@ -3,15 +3,33 @@
 <head>
     <meta charset="utf-8">
     <title>Ninja tag testpagina</title>
-    <style>
-        .container { width: 800px; margin: auto; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>Ninja tag testpagina</h1>
-        <p><b>Naam: </b><span id="playerName"></span></p>
-        <p id="taggerText" style="color:green">Je bent niet de tikker</p>
+        <div class="content">
+            <h1>Ninja tag testpagina</h1>
+            <p><b>Naam: </b><span id="playerName"></span></p>
+            <p id="taggerText" style="color:green">Je bent niet de tikker</p>
+            <div>
+                <h2>Spelers overzicht</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Naam</th>
+                            <th>Is tikker?</th>
+                            <th>X</th>
+                            <th>Y</th>
+                            <th>Breedte</th>
+                            <th>Hoogte</th>
+                            <th>CSS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="playerOverview"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>

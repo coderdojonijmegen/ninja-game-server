@@ -3,6 +3,22 @@ import { Avatar } from "./avatar";
 import { Styles } from "./styles";
 
 
+export interface NormalizedPlayer {
+  id: number
+  name: string
+  tagger: boolean
+  styles: {
+    [key:string]: string
+  }
+  position: {
+    x: number
+    y: number
+    width: number
+    height: number
+  }
+}
+
+
 export class Player {
   pos: Pos
   styles: Styles = {}
@@ -17,6 +33,26 @@ export class Player {
       x, x + Avatar.default_width,
       y, y + Avatar.default_height
     )
+  }
+
+  /**
+   * Create a normalized player object, to send to the clients.
+   * @param {number} tagger_id 
+   * @returns {object}
+   */
+  normalize(tagger_id: number): NormalizedPlayer {
+    return {
+      id: this.id,
+      name: this.name,
+      tagger: tagger_id === this.id,
+      styles: this.styles,
+      position: {
+        x: this.pos.lx,
+        y: this.pos.ty,
+        width: this.pos.rx - this.pos.lx,
+        height: this.pos.by - this.pos.ty
+      }
+    }
   }
 }
 
@@ -67,5 +103,13 @@ export class PlayerList {
   get_player_name(id: number): string {
     const player = this.index.get(id)
     return (player) ? player.name : 'unknown player'
+  }
+
+  /**
+   * Create an array of normalized player objects, to send to the clients.
+   * @returns {array}
+   */
+  normalize(): NormalizedPlayer[] {
+    return Array.from(this.index.values()).map(player => player.normalize(this.tagger))
   }
 }
