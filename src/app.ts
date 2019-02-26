@@ -63,6 +63,9 @@ class App {
       if (tagger_changed) {
         this.change_tagger()
       }
+      else {
+        this.web_server.emit_players(this.players.normalize())
+      }
     }
   }
 

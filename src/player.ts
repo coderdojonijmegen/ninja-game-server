@@ -203,7 +203,7 @@ export class PlayerList {
       if (player.id === this.tagger) {
         // Player is the tagger, check collisions with other players.
         for (const other_player of this.index.values()) {
-          if (player.hasCollision(other_player)) {
+          if (other_player.id !== player.id && player.hasCollision(other_player)) {
             this.previous_tagger = player.id
             this.tagger = other_player.id
             return true
