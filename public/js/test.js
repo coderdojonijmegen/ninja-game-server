@@ -105,6 +105,17 @@ TestApp.prototype.showMonitor = function showMonitor(pos) {
     $('#monitorHeight').text(pos.height)
 }
 
+TestApp.prototype.showAvatars = function showAvatars(avatarList) {
+    var tbody = $('#avatarList')
+    for (const avatar of avatarList) {
+        const img = '<td><img width="64" height="64" src="' + avatar.path + '" alt="' + avatar.name + '"></td>'
+        const name = '<td>' + avatar.name + '</td>'
+        const url = '<td><a href="' + avatar.path + '">' + avatar.path + '</a></td>'
+        const row = $('<tr>' + img + name + url + '</tr>')
+        tbody.append(row)
+    }
+}
+
 TestApp.prototype.start = function start() {
     var _this = this
 
@@ -126,6 +137,9 @@ TestApp.prototype.start = function start() {
     $('#sendStyles').click(function() { _this.sendStyles() })
     $('.deleteRow').click(function() { $(this).closest('tr').remove() })
     $('#spectate').click(function() { _this.socket.emit('spectate') })
+
+    // Get avatars
+    $.getJSON('/avatars', function(data) { _this.showAvatars(data) })
 }
 
 

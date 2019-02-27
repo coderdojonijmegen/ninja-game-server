@@ -12,6 +12,7 @@
             <h1>Ninja tag testpagina</h1>
             <div id="notifications"></div>
             <p><b>Naam: </b><span id="playerName"></span></p>
+            <div><button class="button is-primary" id="spectate"><span class="icon"><i class="fas fa-eye"></i></span><span>Spectate</span></button></div>
             <p>
                 <label for="newName" class="label">Stel een nieuwe naam in:</label>
                 <div class="field has-addons">
@@ -92,7 +93,19 @@
                     </tbody>
                 </table>
             </div>
-            <div><button class="button is-primary" id="spectate"><span class="icon"><i class="fas fa-eye"></i></span><span>Spectate</span></button></div>
+            <div>
+                <h2>Avatars</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Afbeelding</th>
+                            <th>Naam</th>
+                            <th>URL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="avatarList"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
