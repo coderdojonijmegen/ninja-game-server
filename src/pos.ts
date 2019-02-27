@@ -1,3 +1,5 @@
+import { Avatar } from "./avatar";
+
 export class Pos {
   constructor(
     public lx: number,
@@ -42,11 +44,19 @@ export class Pos {
     return this.rx - this.lx
   }
 
+  setWidth(width: number) {
+    this.rx = this.lx + Math.min(width, Avatar.default_width)
+  }
+
   /**
    * Calculate the object height.
    * @returns {number}
    */
   getHeight(): number {
     return this.by - this.ty
+  }
+
+  setHeight(height: number) {
+    this.by = this.ty + Math.min(height, Avatar.default_height)
   }
 }

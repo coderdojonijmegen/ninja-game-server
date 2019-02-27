@@ -103,6 +103,22 @@ export class Player {
     }
   }
 
+  set_styles(newStyles: Styles) {
+    this.styles = {}
+    for (const key in newStyles) {
+      switch (key) {
+        case 'width':
+          this.pos.setWidth(Number.parseInt(newStyles.width))
+          break;
+        case 'height':
+          this.pos.setHeight(Number.parseInt(newStyles.height))
+          break;
+        default:
+          this.styles[key] = newStyles[key]
+      }
+    }
+  }
+
   /**
    * Create a normalized player object, to send to the clients.
    * @param {number} tagger_id 
@@ -252,7 +268,7 @@ export class PlayerList {
   set_styles(player_id: number, styles: Styles): boolean {
     const player = this.index.get(player_id)
     if (player) {
-      player.styles = styles
+      player.set_styles(styles)
       return true
     }
     else {
