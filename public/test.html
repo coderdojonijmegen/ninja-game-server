@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Ninja tag testpagina</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 </head>
 <body>
     <div class="container">
@@ -19,10 +20,35 @@
             </p>
             <p id="taggerText" style="color:green">Je bent niet de tikker</p>
             <div class="field has-addons">
-                <div class="control"><button class="button" id="moveLeft">Ga links (h)</button></div>
-                <div class="control"><button class="button" id="moveDown">Ga omlaag (j)</button></div>
-                <div class="control"><button class="button" id="moveUp">Ga omhoog (k)</button></div>
-                <div class="control"><button class="button" id="moveRight">Ga rechts (l)</button></div>
+                <div class="control"><button class="button is-info" id="moveLeft"><span class="icon"><i class="fas fa-arrow-alt-circle-left"></i></span><span>Ga links</span></button></div>
+                <div class="control"><button class="button is-info" id="moveDown"><span class="icon"><i class="fas fa-arrow-alt-circle-down"></i></span><span>Ga omlaag</span></button></div>
+                <div class="control"><button class="button is-info" id="moveUp"><span class="icon"><i class="fas fa-arrow-alt-circle-up"></i></span><span>Ga omhoog</span></button></div>
+                <div class="control"><button class="button is-info" id="moveRight"><span class="icon"><i class="fas fa-arrow-alt-circle-right"></i></span><span>Ga rechts</span></button></div>
+            </div>
+            <div>
+                <h2>Styles</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Naam</th>
+                            <th>Waarde</th>
+                            <th><span class="icon"><i class="fas fa-edit"></i></span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="stylesTableBody">
+                        <tr>
+                            <td><input type="text" class="input styleKey"></td>
+                            <td><input type="text" class="input styleValue"></td>
+                            <td><button class="button is-danger deleteRow"><span class="icon"><i class="fas fa-minus-circle"></i></span></button></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"><button class="button is-primary" id="sendStyles">Stuur</button></td>
+                            <td><button class="button is-success" id="addStylesRow"><span class="icon"><i class="fas fa-plus-circle"></i></span></button></td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
             <div>
                 <h2>Spelers overzicht</h2>

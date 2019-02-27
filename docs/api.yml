@@ -55,6 +55,11 @@ socket_out:
     description: If this is true, current player is the tagger.
     example: true
 
+  input_error:
+    type: string
+    description: If a call is made with invalid parameters, client is notified by this signal.
+    example: set_styles parameter is invalid.
+
   tagger_monitor:
     type: object
     properties:

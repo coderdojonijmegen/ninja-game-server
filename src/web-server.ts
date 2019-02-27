@@ -5,6 +5,7 @@ import KoaRouter = require('koa-router')
 import SocketIO = require('socket.io')
 import { Avatar } from './avatar';
 import { NormalizedPlayer } from './player';
+import { Styles, StylesValidator } from './styles';
 
 /**
  * The various callbacks for the app to use.
@@ -19,6 +20,7 @@ export class ServerCallbacks {
   move_right: null | ((id: number) => void) = null
   move_up: null | ((id: number) => void) = null
   move_down: null | ((id: number) => void) = null
+  set_styles: null | ((id: number, styles: Styles) => void) = null
 }
 
 /**
@@ -69,13 +71,21 @@ export class WebServer {
     this.socket_io.on('connection', (socket) => {
       if (this.callbacks.new_connection) {
         const connection_id = this.callbacks.new_connection()
+        const input_error = (msg: string) => socket.emit('input_error', msg)
+
         this.sockets.set(connection_id, socket)
         if (this.callbacks.initialize_connection) {
           this.callbacks.initialize_connection(connection_id)
         }
+
         socket.on('set_name', (name: string) => {
           if (this.callbacks.set_name) {
-            this.callbacks.set_name(connection_id, name)
+            if (typeof(name) === 'string') {
+              this.callbacks.set_name(connection_id, name)
+            }
+            else {
+              input_error('set_name parameter is invalid.')
+            }
           }
         })
         socket.on('move_left', () => {
@@ -96,6 +106,16 @@ export class WebServer {
         socket.on('move_down', () => {
           if (this.callbacks.move_down) {
             this.callbacks.move_down(connection_id)
+          }
+        })
+        socket.on('set_styles', (styles: Styles) => {
+          if (this.callbacks.set_styles) {
+            if (StylesValidator.validate(styles)) {
+              this.callbacks.set_styles(connection_id, styles)
+            }
+            else {
+              input_error('set_styles parameter is invalid.')
+            }
           }
         })
         socket.on('disconnect', () => {

@@ -3,6 +3,7 @@ import { PlayerList, Direction } from './player';
 import { Avatar } from './avatar';
 import { WebServer } from './web-server';
 import { ConnectionList } from './connection';
+import { Styles } from './styles';
 
 
 class App {
@@ -106,6 +107,13 @@ class App {
     this.web_server.callbacks.move_right = (id: number) => this.move_player(id, Direction.Right)
     this.web_server.callbacks.move_up = (id: number) => this.move_player(id, Direction.Up)
     this.web_server.callbacks.move_down = (id: number) => this.move_player(id, Direction.Down)
+    // Set styles
+    this.web_server.callbacks.set_styles = (id: number, styles: Styles) => {
+      const player_id = this.connections.get_player_id(id)
+      if (player_id && this.players.set_styles(player_id, styles)) {
+        this.web_server.emit_players(this.players.normalize())
+      }
+    }
     // Start the web server.
     this.web_server.start()
   }

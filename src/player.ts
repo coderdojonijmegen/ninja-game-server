@@ -244,6 +244,23 @@ export class PlayerList {
   }
 
   /**
+   * Set the styles for a player.
+   * @param {number} player_id 
+   * @param {object} styles 
+   * @returns {boolean} true if player data has changed.
+   */
+  set_styles(player_id: number, styles: Styles): boolean {
+    const player = this.index.get(player_id)
+    if (player) {
+      player.styles = styles
+      return true
+    }
+    else {
+      return false
+    }
+  }
+
+  /**
    * Create an array of normalized player objects, to send to the clients.
    * @returns {array}
    */

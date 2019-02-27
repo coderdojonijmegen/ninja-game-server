@@ -25,7 +25,7 @@ TestApp.prototype.showPlayerOverview = function showPlayerOverview(players) {
 
     function parse_styles(styles) {
         var result = ''
-        for (const key in styles) {
+        for (var key in styles) {
             result += key + ': ' + styles[key] + '; '
         }
         return result
@@ -57,6 +57,41 @@ TestApp.prototype.sendName = function sendName() {
     input.val('')
 }
 
+TestApp.prototype.keydown = function keydown(key_code) {
+    switch (key_code) {
+        case 37:
+            this.socket.emit('move_left')
+            break;
+        case 38:
+            this.socket.emit('move_up')
+            break;
+        case 39:
+            this.socket.emit('move_right')
+            break;
+        case 40:
+            this.socket.emit('move_down')
+            break;
+    }
+}
+
+TestApp.prototype.addStylesRow = function addStylesRow() {
+    var row = $('<tr><td><input type="text" class="input styleKey"></td><td><input type="text" class="input styleValue"></td><td><button class="button is-danger deleteRow"><span class="icon"><i class="fas fa-minus-circle"></i></span></button></td></tr>')
+    $('#stylesTableBody').append(row)
+    $('.deleteRow').click(function() { $(this).closest('tr').remove() })
+}
+
+TestApp.prototype.sendStyles = function sendStyles(form) {
+    var keys = []
+    $('.styleKey').each(function() {
+        keys.push(this.value)
+    })
+    var styles = {}
+    $('.styleValue').each(function(index) {
+        styles[keys[index]] = this.value
+    })
+    this.socket.emit('set_styles', styles)
+}
+
 TestApp.prototype.start = function start() {
     var _this = this
 
@@ -71,6 +106,10 @@ TestApp.prototype.start = function start() {
     $('#moveRight').click(function() { _this.socket.emit('move_right') })
     $('#moveUp').click(function() { _this.socket.emit('move_up') })
     $('#moveDown').click(function() { _this.socket.emit('move_down') })
+    $(document).keydown(function(e) { _this.keydown(e.which) })
+    $('#addStylesRow').click(function() { _this.addStylesRow() })
+    $('#sendStyles').click(function() { _this.sendStyles() })
+    $('.deleteRow').click(function() { $(this).closest('tr').remove() })
 }
 
 
