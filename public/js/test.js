@@ -92,6 +92,12 @@ TestApp.prototype.sendStyles = function sendStyles(form) {
     this.socket.emit('set_styles', styles)
 }
 
+TestApp.prototype.showInputError = function showInputError(msg) {
+    var notification = $('<div class="notification is-warning"><button class="delete"></button><span>' + msg + '</span></div>')
+    $('#notifications').append(notification)
+    $('.notification > .delete').click(function() { $(this).closest('.notification').remove() })
+}
+
 TestApp.prototype.start = function start() {
     var _this = this
 
@@ -99,6 +105,7 @@ TestApp.prototype.start = function start() {
     this.socket.on('get_name', function(data) { _this.setName(data) })
     this.socket.on('tag', function(data) { _this.showTaggerText(data) })
     this.socket.on('get_players', function(data) { _this.showPlayerOverview(data) })
+    this.socket.on('input_error', function(data) { _this.showInputError(data) })
 
     // User input
     $('#sendNewName').click(function() { _this.sendName() })
