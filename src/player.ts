@@ -1,7 +1,6 @@
-import { Pos } from "./pos";
+import { Pos, NormalizedPos } from "./pos";
 import { Avatar } from "./avatar";
 import { Styles } from "./styles";
-import { clearScreenDown } from "readline";
 
 
 
@@ -32,12 +31,7 @@ export interface NormalizedPlayer {
   styles: {
     [key:string]: string
   }
-  position: {
-    x: number
-    y: number
-    width: number
-    height: number
-  }
+  position: NormalizedPos
 }
 
 
@@ -130,12 +124,7 @@ export class Player {
       name: this.name,
       tagger: tagger_id === this.id,
       styles: this.styles,
-      position: {
-        x: this.pos.lx,
-        y: this.pos.ty,
-        width: this.pos.getWidth(),
-        height: this.pos.getHeight()
-      }
+      position: this.pos.normalize()
     }
   }
 }
@@ -273,6 +262,58 @@ export class PlayerList {
     }
     else {
       return false
+    }
+  }
+
+  /**
+   * Get the positioning
+   * @param {object} bounds 
+   * @returns {object}
+   */
+  get_tagger_monitor(bounds: Pos): NormalizedPos {
+    const tagger = this.index.get(this.tagger)
+    const default_monitor = Pos.defaultMonitor(bounds)
+    if (tagger) {
+      const half_width = default_monitor.getWidth() / 2
+      const half_height = default_monitor.getHeight() / 2
+      const tagger_monitor = new Pos(
+        tagger.pos.lx - half_width, tagger.pos.lx + half_width,
+        tagger.pos.ty - half_height, tagger.pos.ty + half_height
+      )
+      const x = () => {
+        if (tagger_monitor.lx < default_monitor.lx) {
+          return default_monitor.lx
+        }
+        else if (tagger_monitor.rx > bounds.rx) {
+          return bounds.rx - default_monitor.getWidth()
+        }
+        else {
+          return tagger_monitor.lx
+        }
+      }
+
+      const y = () => {
+        if (tagger_monitor.ty < default_monitor.ty) {
+          return default_monitor.ty
+        }
+        else if (tagger_monitor.by > bounds.by) {
+          return bounds.by - default_monitor.getHeight()
+        }
+        else {
+          return tagger_monitor.ty
+        }
+      }
+
+
+      return {
+        x: x(),
+        y: y(),
+        width: default_monitor.getWidth(),
+        height: default_monitor.getHeight()
+      }
+    }
+    else {
+      return default_monitor.normalize()
     }
   }
 

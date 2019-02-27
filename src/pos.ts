@@ -1,5 +1,14 @@
 import { Avatar } from "./avatar";
 
+
+export interface NormalizedPos {
+  x: number,
+  y: number,
+  width: number,
+  height: number
+}
+
+
 export class Pos {
   constructor(
     public lx: number,
@@ -7,6 +16,15 @@ export class Pos {
     public ty: number,
     public by: number
   ) {}
+
+  static defaultMonitor(bounds: Pos): Pos {
+    return new Pos(
+      Math.max(0, bounds.lx),
+      Math.min(800, bounds.rx),
+      Math.max(0, bounds.ty),
+      Math.min(600, bounds.by)
+    )
+  }
 
   /**
    * Check if a Pos collides with another Pos
@@ -58,5 +76,14 @@ export class Pos {
 
   setHeight(height: number) {
     this.by = this.ty + Math.min(height, Avatar.default_height)
+  }
+
+  normalize(): NormalizedPos {
+    return {
+      x: this.rx,
+      y: this.ty,
+      width: this.getWidth(),
+      height: this.getHeight()
+    }
   }
 }

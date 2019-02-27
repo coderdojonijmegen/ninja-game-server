@@ -31,6 +31,8 @@ class App {
       this.connections.get_connection_by_player_id(this.players.tagger),
       this.connections.get_connection_by_player_id(this.players.previous_tagger)
     )
+    // Broadcast the tagger monitor.
+    this.web_server.emit_tagger_monitor(this.players.get_tagger_monitor(this.field.bounds()))
     // Broadcast a player overview to all.
     this.web_server.emit_players(this.players.normalize())
   }
@@ -65,6 +67,9 @@ class App {
         this.change_tagger()
       }
       else {
+        if (this.players.tagger === player_id) {
+          this.web_server.emit_tagger_monitor(this.players.get_tagger_monitor(this.field.bounds()))
+        }
         this.web_server.emit_players(this.players.normalize())
       }
     }
@@ -89,6 +94,7 @@ class App {
         if (tagger_changed) {
           const tagger_connection_id = this.connections.get_connection_by_player_id(this.players.tagger)
           this.web_server.emit_tagger(tagger_connection_id, null)
+          this.web_server.emit_tagger_monitor(this.players.get_tagger_monitor(this.field.bounds()))
         }
         this.web_server.emit_players(this.players.normalize())
       }

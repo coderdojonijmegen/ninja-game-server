@@ -98,6 +98,13 @@ TestApp.prototype.showInputError = function showInputError(msg) {
     $('.notification > .delete').click(function() { $(this).closest('.notification').remove() })
 }
 
+TestApp.prototype.showMonitor = function showMonitor(pos) {
+    $('#monitorX').text(pos.x)
+    $('#monitorY').text(pos.y)
+    $('#monitorWidth').text(pos.width)
+    $('#monitorHeight').text(pos.height)
+}
+
 TestApp.prototype.start = function start() {
     var _this = this
 
@@ -106,6 +113,7 @@ TestApp.prototype.start = function start() {
     this.socket.on('tag', function(data) { _this.showTaggerText(data) })
     this.socket.on('get_players', function(data) { _this.showPlayerOverview(data) })
     this.socket.on('input_error', function(data) { _this.showInputError(data) })
+    this.socket.on('tagger_monitor', function(data) { _this.showMonitor(data) })
 
     // User input
     $('#sendNewName').click(function() { _this.sendName() })

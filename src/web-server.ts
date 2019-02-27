@@ -6,6 +6,7 @@ import SocketIO = require('socket.io')
 import { Avatar } from './avatar';
 import { NormalizedPlayer } from './player';
 import { Styles, StylesValidator } from './styles';
+import { NormalizedPos } from './pos';
 
 /**
  * The various callbacks for the app to use.
@@ -166,6 +167,16 @@ export class WebServer {
     const socket = this.sockets.get(connection_id)
     if (socket) {
       socket.emit('get_name', name)
+    }
+  }
+
+  /**
+   * Emit the tagger monitor.
+   * @param {number} pos
+   */
+  emit_tagger_monitor(pos: NormalizedPos) {
+    if (this.socket_io) {
+      this.socket_io.emit('tagger_monitor', pos)
     }
   }
 
