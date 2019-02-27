@@ -80,7 +80,7 @@ export class Pos {
 
   normalize(): NormalizedPos {
     return {
-      x: this.rx,
+      x: this.lx,
       y: this.ty,
       width: this.getWidth(),
       height: this.getHeight()

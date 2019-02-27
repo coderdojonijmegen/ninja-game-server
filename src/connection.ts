@@ -64,6 +64,23 @@ export class ConnectionList {
   }
 
   /**
+   * Remove and return the player id from the connection.
+   * @param {number} connection_id 
+   * @returns {number|null} the former player id.
+   */
+  spectate(connection_id: number): number|null {
+    const connection = this.index.get(connection_id)
+    if (connection) {
+      const player_id = connection.player_id
+      connection.player_id = null
+      return player_id
+    }
+    else {
+      return null
+    }
+  }
+
+  /**
    * Find a connection, by looking up the player ids.
    * @param {number} player_id 
    */

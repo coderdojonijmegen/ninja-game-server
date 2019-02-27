@@ -75,6 +75,32 @@ class App {
     }
   }
 
+  /**
+   * Remove a player, but keep the connection.
+   * @param {number} connection_id 
+   */
+  spectate(connection_id: number) {
+    const player_id = this.connections.spectate(connection_id)
+    if (player_id !== null) {
+      this.remove_player(player_id)
+    }
+    this.web_server.emit_name(connection_id, 'spectator')
+  }
+
+  /**
+   * Remove a player.
+   * @param {number} player_id 
+   */
+  remove_player(player_id: number) {
+    const tagger_changed = this.players.remove_player(player_id)
+    if (tagger_changed) {
+      const tagger_connection_id = this.connections.get_connection_by_player_id(this.players.tagger)
+      this.web_server.emit_tagger(tagger_connection_id, null)
+      this.web_server.emit_tagger_monitor(this.players.get_tagger_monitor(this.field.bounds()))
+    }
+    this.web_server.emit_players(this.players.normalize())
+  }
+
 
   /**
    * Set all the server callbacks and run the web server.
@@ -90,13 +116,7 @@ class App {
     this.web_server.callbacks.close_connection = (id: number) => {
       const player_id = this.connections.close_connection(id)
       if (player_id !== null) {
-        const tagger_changed = this.players.remove_player(player_id)
-        if (tagger_changed) {
-          const tagger_connection_id = this.connections.get_connection_by_player_id(this.players.tagger)
-          this.web_server.emit_tagger(tagger_connection_id, null)
-          this.web_server.emit_tagger_monitor(this.players.get_tagger_monitor(this.field.bounds()))
-        }
-        this.web_server.emit_players(this.players.normalize())
+        this.remove_player(player_id)
       }
     }
     // Set a player name.
@@ -120,6 +140,8 @@ class App {
         this.web_server.emit_players(this.players.normalize())
       }
     }
+    // Spectate
+    this.web_server.callbacks.spectate = (id: number) => this.spectate(id)
     // Start the web server.
     this.web_server.start()
   }

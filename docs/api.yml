@@ -44,6 +44,10 @@ socket_in:
     description: the css styles for the player avatar as a flat json object.
     example: {width: "32", height: "64", border: "1px solid black"}
 
+  spectate:
+    type: void
+    description: become a spectator, by detaching from your player.
+
 socket_out:
   get_name:
     type: string

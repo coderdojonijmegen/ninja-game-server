@@ -125,6 +125,7 @@ TestApp.prototype.start = function start() {
     $('#addStylesRow').click(function() { _this.addStylesRow() })
     $('#sendStyles').click(function() { _this.sendStyles() })
     $('.deleteRow').click(function() { $(this).closest('tr').remove() })
+    $('#spectate').click(function() { _this.socket.emit('spectate') })
 }
 
 

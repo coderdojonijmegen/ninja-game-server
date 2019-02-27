@@ -22,6 +22,7 @@ export class ServerCallbacks {
   move_up: null | ((id: number) => void) = null
   move_down: null | ((id: number) => void) = null
   set_styles: null | ((id: number, styles: Styles) => void) = null
+  spectate: null | ((id: number) => void) = null
 }
 
 /**
@@ -117,6 +118,11 @@ export class WebServer {
             else {
               input_error('set_styles parameter is invalid.')
             }
+          }
+        })
+        socket.on('spectate', () => {
+          if (this.callbacks.spectate) {
+            this.callbacks.spectate(connection_id)
           }
         })
         socket.on('disconnect', () => {
