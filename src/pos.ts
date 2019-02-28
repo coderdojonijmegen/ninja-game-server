@@ -31,7 +31,7 @@ export class Pos {
    * @param {Pos} other
    * @returns {boolean} true if a collision happens.
    */
-  hasCollision(other: Pos): boolean {
+  has_collision(other: Pos): boolean {
     return (
       this.lx < other.rx &&
       this.rx > other.lx &&
@@ -45,7 +45,7 @@ export class Pos {
    * @param {Pos} bounds 
    * @returns {boolean} true if the Pos is within bounds.
    */
-  isWithinBounds(bounds: Pos): boolean {
+  is_within_bounds(bounds: Pos): boolean {
     return (
       this.lx >= bounds.lx &&
       this.rx <= bounds.rx &&
@@ -58,11 +58,11 @@ export class Pos {
    * Calculate the object width
    * @returns {number}
    */
-  getWidth(): number {
+  get_width(): number {
     return this.rx - this.lx
   }
 
-  setWidth(width: number) {
+  set_width(width: number) {
     this.rx = this.lx + Math.min(width, Avatar.default_width)
   }
 
@@ -70,11 +70,11 @@ export class Pos {
    * Calculate the object height.
    * @returns {number}
    */
-  getHeight(): number {
+  get_height(): number {
     return this.by - this.ty
   }
 
-  setHeight(height: number) {
+  set_height(height: number) {
     this.by = this.ty + Math.min(height, Avatar.default_height)
   }
 
@@ -82,8 +82,8 @@ export class Pos {
     return {
       x: this.lx,
       y: this.ty,
-      width: this.getWidth(),
-      height: this.getHeight()
+      width: this.get_width(),
+      height: this.get_height()
     }
   }
 }
