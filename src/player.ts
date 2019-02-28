@@ -131,11 +131,13 @@ export class Player {
 
 export class PlayerList {
   index: Map<number, Player>
+  nameList: Set<string>
   tagger: number = 0
   previous_tagger: number = 0
 
   constructor() {
     this.index = new Map()
+    this.nameList = new Set()
   }
 
   /**
@@ -151,7 +153,8 @@ export class PlayerList {
   add_player(): number {
     // TODO: check that each player has a unique name.
     const new_id = this.max_player_id() + 1
-    this.index.set(new_id, new Player(new_id, "anon" + new_id, 2500, 2500))
+    this.index.set(new_id, new Player(new_id, "", 2500, 2500))
+    this.set_player_name(new_id, "anon")
     this.previous_tagger = this.tagger
     this.tagger = new_id
     return new_id
@@ -184,14 +187,28 @@ export class PlayerList {
   }
 
   /**
-   * Set a player name.
-   * @param {number }id 
+   * Set a unique player name.
+   * @param {number} id 
    * @param {string} name 
    */
   set_player_name(id: number, name: string): void {
     const player = this.index.get(id)
     if (player) {
-      player.name = name
+      this.nameList.delete(player.name)
+      const trimmed_name = name.trim()
+      const correct_name = (trimmed_name.length > 0) ? trimmed_name : 'anon'
+      
+      if (this.nameList.has(correct_name)) {
+        let i = 1
+        while (this.nameList.has(correct_name + i)) {
+          i++
+        }
+        player.name = correct_name + i
+      }
+      else {
+        player.name = correct_name
+      }
+      this.nameList.add(player.name)
     }
   }
 
