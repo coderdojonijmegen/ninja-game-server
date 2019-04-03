@@ -38,12 +38,14 @@ export interface NormalizedPlayer {
     [key:string]: string
   }
   position: NormalizedPos
+  last_message: string
 }
 
 
 export class Player {
   pos: Pos
   styles: Styles = {}
+  last_message: Date
 
   constructor(
     public id: number,
@@ -51,6 +53,7 @@ export class Player {
     x: number,
     y: number
   ) {
+    this.last_message = new Date()
     this.pos = new Pos(
       x, x + Avatar.default_width,
       y, y + Avatar.default_height
@@ -131,8 +134,16 @@ export class Player {
       name: this.name,
       tagger: tagger_id === this.id,
       styles: this.styles,
-      position: this.pos.normalize()
+      position: this.pos.normalize(),
+      last_message: this.last_message.toTimeString()
     }
+  }
+
+  /**
+   * Updates the last message time.
+   */
+  update_last_message() {
+    this.last_message.setTime(Date.now())
   }
 }
 
@@ -201,6 +212,7 @@ export class PlayerList {
   set_player_name(id: number, name: string): void {
     const player = this.index.get(id)
     if (player) {
+      player.update_last_message()
       this.name_list.delete(player.name)
       const trimmed_name = name.trim()
       const correct_name = (trimmed_name.length > 0) ? trimmed_name : 'anon'
@@ -262,6 +274,7 @@ export class PlayerList {
   move(player_id: number, direction: Direction, bounds: Pos): boolean {
     const player = this.index.get(player_id)
     if (player) {
+      player.update_last_message()
       const already_collided = this.check_tag(player, false)
       if (player.move(direction, bounds)) {
         return already_collided
@@ -281,6 +294,7 @@ export class PlayerList {
   set_styles(player_id: number, styles: Styles): boolean {
     const player = this.index.get(player_id)
     if (player) {
+      player.update_last_message()
       player.set_styles(styles)
       return true
     }

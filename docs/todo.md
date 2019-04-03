@@ -1,6 +1,6 @@
 Server aanpassingen
 ===================
 - [x] Random kleur toewijzing.
-- [ ] Afbeelding upload pagina.
-- [ ] Laatste communicatie moment bijhouden.
+- [x] Laatste communicatie moment bijhouden.
 - [ ] Delete speler knop.
+- [ ] Afbeelding upload pagina.

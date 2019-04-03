@@ -36,6 +36,7 @@ TestApp.prototype.showPlayerOverview = function showPlayerOverview(players) {
             '<tr>' +
             cell(player.id) +
             cell(player.name) +
+            cell(player.last_message) +
             cell(player.tagger ? 'Ja' : 'Nee') +
             cell(player.position.x) +
             cell(player.position.y) +
