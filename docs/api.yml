@@ -48,6 +48,10 @@ socket_in:
     type: void
     description: become a spectator, by detaching from your player.
 
+  remove_player:
+    type: number
+    description: Remove another player from the field.
+
 socket_out:
   get_name:
     type: string
