@@ -16,6 +16,12 @@ function calculate_move_delta(length: number, positive: boolean): number {
 }
 
 
+function random_color() {
+  const r = () => Math.floor(Math.random() * 200)
+  return `rgb(${r()}, ${r()}, ${r()})`
+}
+
+
 export enum Direction {
   Left,
   Right,
@@ -49,6 +55,7 @@ export class Player {
       x, x + Avatar.default_width,
       y, y + Avatar.default_height
     )
+    this.styles['background-color'] = random_color()
   }
 
   /**
