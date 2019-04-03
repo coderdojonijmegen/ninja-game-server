@@ -101,6 +101,16 @@ class App {
     this.web_server.emit_players(this.players.normalize())
   }
 
+  /**
+   * Forcibly remove another player.
+   */
+  external_remove_player(player_id: number) {
+    const connection_id = this.connections.get_connection_by_player_id(player_id)
+    if (connection_id) {
+      this.spectate(connection_id)
+    }
+  }
+
 
   /**
    * Set all the server callbacks and run the web server.
@@ -142,6 +152,8 @@ class App {
     }
     // Spectate
     this.web_server.callbacks.spectate = (id: number) => this.spectate(id)
+    // Remove player
+    this.web_server.callbacks.remove_player = (player_id: number) => this.external_remove_player(player_id)
     // Start the web server.
     this.web_server.start()
   }

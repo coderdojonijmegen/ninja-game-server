@@ -18,6 +18,13 @@ TestApp.prototype.showTaggerText = function showTaggerText(is_tagger) {
 }
 
 
+TestApp.prototype.removePlayer = function removePlayer($button) {
+    var player_id = $button.data('playerid')
+    console.log("Remove player " + player_id)
+    this.socket.emit('remove_player', player_id)
+}
+
+
 TestApp.prototype.showPlayerOverview = function showPlayerOverview(players) {
     function cell(content) {
         return '<td>' + content + '</td>'
@@ -43,11 +50,14 @@ TestApp.prototype.showPlayerOverview = function showPlayerOverview(players) {
             cell(player.position.width) +
             cell(player.position.height) +
             cell(parse_styles(player.styles)) +
+            '<td><button class="button is-danger deletePlayer" data-playerid="' + player.id + '"><span class="icon"><i class="fas fa-minus-circle"></i></span></button></td>' +
             '</tr>'
     }
 
     var rows = players.reduce(row, '')
+    var _this = this
     $('#playerOverview').html(rows)
+    $('.deletePlayer').click(function () { _this.removePlayer($(this)) })
 }
 
 

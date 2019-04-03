@@ -23,6 +23,7 @@ export class ServerCallbacks {
   move_down: null | ((id: number) => void) = null
   set_styles: null | ((id: number, styles: Styles) => void) = null
   spectate: null | ((id: number) => void) = null
+  remove_player: null | ((player_id: number) => void) = null
 }
 
 /**
@@ -123,6 +124,16 @@ export class WebServer {
         socket.on('spectate', () => {
           if (this.callbacks.spectate) {
             this.callbacks.spectate(connection_id)
+          }
+        })
+        socket.on('remove_player', (player_id: number) => {
+          if (this.callbacks.remove_player) {
+            if (typeof player_id === 'number') {
+              this.callbacks.remove_player(player_id)
+            }
+            else {
+              input_error('remove_player parameter is invalid.')
+            }
           }
         })
         socket.on('disconnect', () => {
