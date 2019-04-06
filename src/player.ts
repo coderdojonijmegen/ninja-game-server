@@ -3,6 +3,9 @@ import { Avatar } from "./avatar";
 import { Styles } from "./styles";
 
 
+const MAX_PLAYER_WIDTH = 128
+const MAX_PLAYER_HEIGHT = 128
+
 
 /**
  * A function used when moving a player avatar.
@@ -46,6 +49,7 @@ export class Player {
   pos: Pos
   styles: Styles = {}
   last_message: Date
+
 
   constructor(
     public id: number,
@@ -107,15 +111,19 @@ export class Player {
     }
   }
 
+  /**
+   * Set new CSS styling.
+   * @param {object} newStyles 
+   */
   set_styles(newStyles: Styles) {
     this.styles = {}
     for (const key in newStyles) {
       switch (key) {
         case 'width':
-          this.pos.set_width(Number.parseInt(newStyles.width))
+          this.pos.set_width(Number.parseInt(newStyles.width), MAX_PLAYER_WIDTH)
           break;
         case 'height':
-          this.pos.set_height(Number.parseInt(newStyles.height))
+          this.pos.set_height(Number.parseInt(newStyles.height), MAX_PLAYER_HEIGHT)
           break;
         default:
           this.styles[key] = newStyles[key]

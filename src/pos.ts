@@ -1,6 +1,3 @@
-import { Avatar } from "./avatar";
-
-
 export interface NormalizedPos {
   x: number,
   y: number,
@@ -62,8 +59,9 @@ export class Pos {
     return this.rx - this.lx
   }
 
-  set_width(width: number) {
-    this.rx = this.lx + Math.min(width, Avatar.default_width)
+  set_width(width: number, max: number|null = null) {
+    const new_width = (typeof max === 'number') ? Math.min(width, max) : width
+    this.rx = this.lx + new_width
   }
 
   /**
@@ -74,8 +72,9 @@ export class Pos {
     return this.by - this.ty
   }
 
-  set_height(height: number) {
-    this.by = this.ty + Math.min(height, Avatar.default_height)
+  set_height(height: number, max: number|null = null) {
+    const new_height = (typeof max === 'number') ? Math.min(height, max) : height
+    this.by = this.ty + new_height
   }
 
   normalize(): NormalizedPos {
