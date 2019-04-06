@@ -179,7 +179,10 @@ export class PlayerList {
   add_player(): number {
     // TODO: check that each player has a unique name.
     const new_id = this.max_player_id() + 1
-    this.index.set(new_id, new Player(new_id, "", 0, 0))
+    const random_x = Math.floor(Math.random() * 500)
+    const random_y = Math.floor(Math.random() * 500)
+
+    this.index.set(new_id, new Player(new_id, "", random_x, random_y))
     this.set_player_name(new_id, "anon")
     this.previous_tagger = this.tagger
     this.tagger = new_id
